@@ -1,0 +1,45 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# Django
+db.sqlite3
+/static/
+/media/
+*.log
+
+# VS Code
+.vscode/
+
+# Byte-compiled / optimized
+*.egg-info/
+*.egg
+
+# Distribution / packaging
+build/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python tools
+.mypy_cache/
+.pytest_cache/
+.coverage
+
+# IDE
+.idea/
+
+# Secrets
+.secret
+
+# Project specific
+.uv.lock

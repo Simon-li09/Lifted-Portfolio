@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+    <!-- Inline Tailwind CDN for easy dev usage -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* glass card mixin */
+      .glass {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+        backdrop-filter: blur(8px) saturate(140%);
+        -webkit-backdrop-filter: blur(8px) saturate(140%);
+      }
+      .glass-strong {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px) saturate(140%);
+        -webkit-backdrop-filter: blur(10px) saturate(140%);
+      }
+      /* Mobile menu behavior styles */
+      .mobile-menu {
+        max-height: none;
+        opacity: 1;
+        transform: none;
+        overflow: visible;
+      }
+      /* Animations removed per request */
+    </style>
+  </head>
+  <body class="bg-[#0b0b21] text-gray-100 antialiased">
+    <nav class="absolute inset-x-0 top-0 z-30">
+      <div class="max-w-screen-xl mx-auto px-6 py-6 flex items-center justify-between">
+        <a class="text-2xl font-bold tracking-wide text-pink-400" href="{% url 'pot:index' %}">KOYTA</a>
+        <ul id="navMenu" class="hidden md:flex items-center space-x-8 text-gray-300">
+          <li><a class="hover:text-white" href="{% url 'pot:index' %}">Home</a></li>
+          <li><a class="hover:text-white" href="{% url 'pot:about' %}">About</a></li>
+          <li><a class="hover:text-white" href="{% url 'pot:portfolio' %}">Portfolio</a></li>
+          <li><a class="hover:text-white" href="{% url 'pot:blog_list' %}">Blog</a></li>
+          <li><a class="hover:text-white" href="{% url 'pot:contact' %}">Contact</a></li>
+          <li><a class="hover:text-white" href="{% url 'pot:faq' %}">FAQ</a></li>
+        </ul>
+        <button id="navToggle" aria-expanded="false" aria-controls="navMenu" class="md:hidden text-white text-3xl">&#9776;</button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu toggle script -->
+    <script>
+      (function(){
+        const toggle = document.getElementById('navToggle');
+        const menu = document.getElementById('navMenu');
+        if(!toggle || !menu) return;
+        const mobileClasses = ['flex','flex-col','absolute','left-0','right-0','top-full','bg-[#0b0b21]','px-6','py-4','space-y-2','mobile-menu'];
+
+        toggle.addEventListener('click', function(){
+          const isOpen = menu.classList.contains('open');
+          if(!isOpen){
+            // open
+            menu.classList.remove('hidden');
+            mobileClasses.forEach(c => menu.classList.add(c));
+            // after adding classes, ensure open state triggers transition
+            requestAnimationFrame(()=> menu.classList.add('open'));
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.innerHTML = '&#10005;'; // X
+          } else {
+            // close: remove open, wait for transition end to hide
+            menu.classList.remove('open');
+            menu.addEventListener('transitionend', function handler(e){
+              if(e.propertyName === 'max-height'){
+                mobileClasses.forEach(c => menu.classList.remove(c));
+                menu.classList.add('hidden');
+                menu.removeEventListener('transitionend', handler);
+              }
+            });
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.innerHTML = '&#9776;';
+          }
+        });
+        // close menu on resize to large screens
+        window.addEventListener('resize', function(){
+          if(window.innerWidth >= 768){
+            menu.classList.remove('hidden');
+            menu.classList.remove('open');
+            mobileClasses.forEach(c => menu.classList.remove(c));
+            // ensure md:flex class keeps menu visible on desktop
+            if(!menu.classList.contains('md:flex')) menu.classList.add('md:flex');
+            // reset toggle
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.innerHTML = '&#9776;';
+          } else {
+            // hide on mobile by default
+            if(!menu.classList.contains('hidden')) menu.classList.add('hidden');
+          }
+        });
+
+        // close menu when clicking a link (on mobile)
+        menu.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', () => {
+            if(window.innerWidth < 768){
+              // close with transition
+              if(menu.classList.contains('open')){
+                menu.classList.remove('open');
+                menu.addEventListener('transitionend', function handler(e){
+                  if(e.propertyName === 'max-height'){
+                    mobileClasses.forEach(c => menu.classList.remove(c));
+                    menu.classList.add('hidden');
+                    menu.removeEventListener('transitionend', handler);
+                  }
+                });
+              }
+              toggle.setAttribute('aria-expanded', 'false');
+              toggle.innerHTML = '&#9776;';
+            }
+          })
+        })
+
+        // Reveal/animation/counter code removed per request
+      })();
+    </script>
+
+    <main class="pt-32">
+      {% for message in messages %}
+        <div class="mb-4 px-4 py-3 rounded-md bg-green-800 text-green-100 border border-green-700">{{ message }}</div>
+      {% endfor %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="w-full bg-[#0b0b21] text-gray-300 py-14 mt-12">
+      <div class="max-w-screen-xl mx-auto px-6">
+        <div class="py-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-10">
+
+          <!-- Brand + Description -->
+          <div class="md:col-span-2">
+            <div class="flex items-center space-x-3 mb-4">
+              <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black font-bold">⚡</div>
+              <h2 class="text-xl font-semibold">KOYTA</h2>
+            </div>
+
+            <p class="text-sm text-gray-400 leading-relaxed mb-5">
+              This may include the company’s address, phone number, email address,
+              and links to social media profiles.
+            </p>
+
+            <p class="text-sm mb-2">📧 Info@zoyothemes.com</p>
+            <p class="text-sm">📞 (888) 253 145 148</p>
+          </div>
+
+          <!-- Company -->
+          <div>
+            <h3 class="font-semibold text-white mb-4">COMPANY</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#" class="hover:text-white">Services</a></li>
+              <li><a href="#" class="hover:text-white">About Us</a></li>
+              <li><a href="#" class="hover:text-white">Careers</a></li>
+              <li><a href="#" class="hover:text-white">Works</a></li>
+            </ul>
+          </div>
+
+          <!-- Services -->
+          <div>
+            <h3 class="font-semibold text-white mb-4">SERVICES</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#" class="hover:text-white">Mobile App Development</a></li>
+              <li><a href="#" class="hover:text-white">Web Development</a></li>
+              <li><a href="#" class="hover:text-white">UI/UX Design</a></li>
+              <li><a href="#" class="hover:text-white">Quality Assurance</a></li>
+              <li><a href="#" class="hover:text-white">Full-Stack Development</a></li>
+            </ul>
+          </div>
+
+          <!-- Resources -->
+          <div>
+            <h3 class="font-semibold text-white mb-4">RESOURCES</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#" class="hover:text-white">Blog</a></li>
+              <li><a href="#" class="hover:text-white">Help Center</a></li>
+              <li><a href="#" class="hover:text-white">FAQ</a></li>
+            </ul>
+
+            <h3 class="font-semibold text-white mt-6 mb-4">GET IN TOUCH</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#" class="hover:text-white flex items-center space-x-2"><span></span><span>Twitter</span></a></li>
+              <li><a href="#" class="hover:text-white flex items-center space-x-2"><span></span><span>Instagram</span></a></li>
+              <li><a href="#" class="hover:text-white flex items-center space-x-2"><span></span><span>Facebook</span></a></li>
+              <li><a href="#" class="hover:text-white flex items-center space-x-2"><span></span><span>Github</span></a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Bottom Line -->
+        <div class="border-t border-gray-700 mt-10 pt-5 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
+          <p>{{ now|date:"Y" }} © KOYTA - KOYTA.com</p>
+          <p class="mt-3 md:mt-0">Terms · Conditions · Policy</p>
+        </div>
+
+        </div>
+      </div>
+    </footer>
+  </body>
+  </html>

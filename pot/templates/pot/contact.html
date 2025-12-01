@@ -1,0 +1,83 @@
+{% extends 'pot/base.html' %}
+
+{% block title %}Contact — KOYTA{% endblock %}
+
+{% block content %}
+  <!-- Contact Hero With Form (adapted to Django form) -->
+  <div class="min-h-screen bg-[#0b0b21] flex items-center justify-center p-6">
+    <div class="max-w-6xl w-full bg-white/6 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+
+      <!-- Left: decorative gradient + image area -->
+      <div class="relative h-72 md:h-auto">
+        <div class="absolute inset-0 bg-gradient-to-br from-pink-600 to-purple-700 opacity-30"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <!-- Using placeholder SVG since no image file available -->
+          <svg class="w-full h-full object-cover opacity-10" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="40" width="360" height="220" rx="20" fill="#111827" />
+          </svg>
+        </div>
+
+        <div class="absolute left-6 bottom-6 rounded-lg bg-white/30 backdrop-blur-md px-4 py-3 shadow-md">
+          <p class="text-sm font-medium text-slate-200">We're here to help</p>
+          <p class="text-xs text-slate-300">Response time: typically within 24 hours</p>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="p-8 md:p-12 flex flex-col justify-center">
+        <div class="mb-6">
+          <h1 class="text-2xl md:text-3xl font-extrabold text-white">Let's build something great together</h1>
+          <p class="mt-2 text-sm text-slate-300">Tell us a bit about your project and we'll get back to you.</p>
+        </div>
+
+        <form method="post" class="grid grid-cols-1 gap-4">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="flex flex-col">
+              <span class="text-xs text-slate-300 mb-1">Full name</span>
+              {{ form.name }}
+              <div class="text-sm text-red-400">{{ form.name.errors }}</div>
+            </label>
+
+            <label class="flex flex-col">
+              <span class="text-xs text-slate-300 mb-1">Email</span>
+              {{ form.email }}
+              <div class="text-sm text-red-400">{{ form.email.errors }}</div>
+            </label>
+          </div>
+
+          <label class="flex flex-col">
+            <span class="text-xs text-slate-300 mb-1">Project budget (optional)</span>
+            {{ form.budget }}
+            <div class="text-sm text-red-400">{{ form.budget.errors }}</div>
+          </label>
+
+          <label class="flex flex-col">
+            <span class="text-xs text-slate-300 mb-1">Message</span>
+            {{ form.message }}
+            <div class="text-sm text-red-400">{{ form.message.errors }}</div>
+          </label>
+
+          <div class="flex items-center justify-between gap-3">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-300 to-indigo-500 text-gray-900 font-medium px-5 py-3 text-sm">Send message</button>
+
+            <div class="text-xs text-slate-400">Or email us at <a href="mailto:hello@example.com" class="underline">hello@example.com</a></div>
+          </div>
+        </form>
+
+        <div class="mt-6 flex items-center gap-4 text-sm text-slate-400">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 8.5v7A2.5 2.5 0 0 0 5.5 18h13a2.5 2.5 0 0 0 2.5-2.5v-7" />
+              <path d="M21 6.5a2.5 2.5 0 0 0-2.5-2.5h-13A2.5 2.5 0 0 0 3 6.5V8" />
+            </svg>
+            <span>Support available — Mon–Fri</span>
+          </div>
+          <div class="ml-auto text-xs text-slate-400">Privacy: we never share your info</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
