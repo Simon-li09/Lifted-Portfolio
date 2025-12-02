@@ -9,10 +9,7 @@ venv/
 ENV/
 env/
 
-# Django
-db.sqlite3
-/static/
-/media/
+
 *.log
 
 # VS Code
